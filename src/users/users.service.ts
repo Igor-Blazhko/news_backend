@@ -14,11 +14,12 @@ export class UsersService {
                 ...userBodyRegister,
                 login:userBodyRegister.login.toLowerCase(),
             }
-            const responseDB = this.TaskRepository.create(userBodyRegisterModifed)
-            if(!responseDB){
-                throw new HttpException('Ошибка работы с базой данных', HttpStatus.BAD_REQUEST)
+
+            const user = this.TaskRepository.create(userBodyRegisterModifed)
+            if(!user){
+                throw new Error('Ошибка работы с базой данных')
             }
-            return responseDB
+            return user
         }catch(error){
             return error
         }
@@ -26,15 +27,15 @@ export class UsersService {
 
     async getUserAtLogin(login:string):Promise<Error|User>{
         try{
-            const responseDB = this.TaskRepository.findOne({
+            const user = this.TaskRepository.findOne({
                 where:{
                     login:login.toLowerCase()
                 }
             })
-            if(!responseDB){
+            if(!user){
                 throw new Error('Ошибка работы с базой данных')
             }
-            return responseDB
+            return user
         }catch(error){
             return error
         }

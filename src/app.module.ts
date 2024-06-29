@@ -8,10 +8,13 @@ import { TagsModule } from './tags/tags.module';
 import { User } from "./users/models/users.model";
 import { AppController } from "./app.controller";
 import { AuthModule } from './auth/auth.module';
+import { JwtModule } from "@nestjs/jwt";
+import { NewsTagsModule } from './news-tags/news-tags.module';
 
 @Module({
     controllers: [AppController],
     imports: [
+        JwtModule,
         ConfigModule.forRoot({
             isGlobal:true,
         }),
@@ -35,6 +38,7 @@ import { AuthModule } from './auth/auth.module';
         UsersModule,
         TagsModule,
         AuthModule,
+        NewsTagsModule,
       ],
 })
 export class AppModule{
