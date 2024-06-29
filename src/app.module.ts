@@ -7,6 +7,7 @@ import { UsersModule } from './users/users.module';
 import { TagsModule } from './tags/tags.module';
 import { User } from "./users/models/users.model";
 import { AppController } from "./app.controller";
+import { AuthModule } from './auth/auth.module';
 
 @Module({
     controllers: [AppController],
@@ -33,6 +34,7 @@ import { AppController } from "./app.controller";
         CommentsModule,
         UsersModule,
         TagsModule,
+        AuthModule,
       ],
 })
 export class AppModule{
