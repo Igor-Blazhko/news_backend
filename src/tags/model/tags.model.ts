@@ -9,15 +9,14 @@ export interface CreateTags{
     nametag:string,
 }
 
+
+@BelongsToMany(()=>New,()=>NewsTags)
 @Table({tableName:'Tags'})
 export class Tag extends Model<Tag, CreateTags>{
 
     @Column({type:DataType.INTEGER, unique:true , autoIncrement:true , allowNull:false, primaryKey:true})
     id: number;
 
-    @Column({type:DataType.INTEGER, allowNull:false})
+    @Column({type:DataType.INTEGER, allowNull:false, unique:true})
     nametag: string;
-
-    @BelongsToMany(() => New, () => NewsTags)
-    tags: New[]
 }

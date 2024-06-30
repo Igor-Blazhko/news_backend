@@ -6,7 +6,7 @@ import { CreateUserDto } from './dto/users.dto';
 @Injectable()
 export class UsersService {
 
-    constructor(@InjectModel(User) private TaskRepository:typeof User){}
+    constructor(@InjectModel(User) private UserORM:typeof User){}
 
     async CreateUser(userBodyRegister:CreateUserDto):Promise<Error|User>{
         try{
@@ -15,9 +15,9 @@ export class UsersService {
                 login:userBodyRegister.login.toLowerCase(),
             }
 
-            const user = this.TaskRepository.create(userBodyRegisterModifed)
+            const user = await this.UserORM.create(userBodyRegisterModifed)
             if(!user){
-                throw new Error('Ошибка работы с базой данных')
+                throw new Error('Ошибка работы с базой данных1')
             }
             return user
         }catch(error){
@@ -27,17 +27,18 @@ export class UsersService {
 
     async getUserAtLogin(login:string):Promise<Error|User>{
         try{
-            const user = this.TaskRepository.findOne({
+            const user = await this.UserORM.findOne({
                 where:{
                     login:login.toLowerCase()
                 }
             })
+            
             if(!user){
                 throw new Error('Ошибка работы с базой данных')
             }
             return user
         }catch(error){
-            return error
+            return null
         }
     }
     

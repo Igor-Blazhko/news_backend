@@ -10,6 +10,9 @@ import { AppController } from "./app.controller";
 import { AuthModule } from './auth/auth.module';
 import { JwtModule } from "@nestjs/jwt";
 import { NewsTagsModule } from './news-tags/news-tags.module';
+import { New } from "./news/model/news,.model";
+import { Tag } from "./tags/model/tags.model";
+import { NewsTags } from "./news-tags/news-tags.model";
 
 @Module({
     controllers: [AppController],
@@ -29,7 +32,7 @@ import { NewsTagsModule } from './news-tags/news-tags.module';
                 username: configService.get('POSTGRES_USERNAME'),
                 password: configService.get('POSTGRES_PASSWORD'),
                 database: configService.get('POSTGRES_DB_NAME'),
-                models: [User],
+                models: [User,New,Tag,NewsTags],
             }),
             inject:[ConfigService], 
         }),

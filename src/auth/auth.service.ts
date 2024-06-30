@@ -23,7 +23,7 @@ export class AuthService {
             
             if (user instanceof User){
                 const payload = {
-                    sub:user.id,
+                    id:user.id,
                     login:user.login,
                     name:user.name,
                     sername:user.sername,
@@ -44,7 +44,7 @@ export class AuthService {
             const candidate:User|Error = await this.UserService.getUserAtLogin(userBodyRegister.login);
 
             if(candidate){
-                throw new HttpException('Пользователь существует',HttpStatus.BAD_REQUEST)
+                throw new HttpException('Пользователь существует2',HttpStatus.BAD_REQUEST)
             }
     
             const hashPassword = await bcrypt.hash( userBodyRegister.password, 5 )
@@ -57,7 +57,7 @@ export class AuthService {
 
         }
         catch(error){
-            throw new HttpException('Ошибка работы с базой данных', HttpStatus.BAD_REQUEST)
+            throw new HttpException('Ошибка работы с базой данных3', HttpStatus.BAD_REQUEST)
         }
         
     }

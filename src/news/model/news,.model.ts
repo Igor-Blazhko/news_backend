@@ -8,8 +8,10 @@ import { User } from "src/users/models/users.model";
 export interface CreateNews{
     article:string,
     text:string,
+    UserId:number,
 }
 
+@BelongsToMany(()=>Tag,()=>NewsTags)
 @Table({tableName:'News'})
 export class New extends Model<New, CreateNews>{
 
@@ -29,6 +31,5 @@ export class New extends Model<New, CreateNews>{
     @BelongsTo(()=> User)
     author:User
 
-    @BelongsToMany(() => Tag, () => NewsTags)
-    tags: Tag[]
+    
 }
