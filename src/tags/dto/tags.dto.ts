@@ -1,8 +1,8 @@
-import { IsNotEmpty, IsString } from "class-validator";
-import { CreateTags } from "../model/tags.model";
+import { IsNotEmpty, IsString } from 'class-validator';
+import { CreateTags } from '../model/tags.model';
 
-export class CreateTagDto implements CreateTags{
-    @IsString()
-    @IsNotEmpty()
-    readonly nametag:string;
+export class CreateTagDto implements CreateTags {
+  @IsString()
+  @IsNotEmpty()
+  readonly nametag: string;
 }

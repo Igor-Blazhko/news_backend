@@ -10,7 +10,7 @@ import { AppController } from "./app.controller";
 import { AuthModule } from './auth/auth.module';
 import { JwtModule } from "@nestjs/jwt";
 import { NewsTagsModule } from './news-tags/news-tags.module';
-import { New } from "./news/model/news,.model";
+import { New } from "./news/model/news.model";
 import { Tag } from "./tags/model/tags.model";
 import { NewsTags } from "./news-tags/news-tags.model";
 

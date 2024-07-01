@@ -9,6 +9,7 @@ import { Tag } from './model/tags.model';
     SequelizeModule.forFeature([Tag]),
   ],
   providers: [TagsService],
-  controllers: [TagsController]
+  controllers: [TagsController],
+  exports:[TagsService]
 })
 export class TagsModule {}

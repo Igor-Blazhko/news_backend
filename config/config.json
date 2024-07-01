@@ -1,20 +1,20 @@
 {
   "development": {
-    "username": "postgres",
+    "username": "dunice",
     "password": "dunice",
     "database": "newsProject",
     "host": "localhost",
     "dialect": "postgres"
   },
   "test": {
-    "username": "postgres",
+    "username": "dunice",
     "password": "dunice",
-    "database": "testDB",
+    "database": "newsProject",
     "host": "localhost",
     "dialect": "postgres"
   },
   "production": {
-    "username": "postgres",
+    "username": "dunice",
     "password": "dunice",
     "database": "newsProject",
     "host": "localhost",

@@ -5,12 +5,12 @@ import { createAssotiationDto } from './dto/news-tags.dto';
 
 @Injectable()
 export class NewsTagsService {
+  constructor(@InjectModel(NewsTags) private NewsTagsORM: typeof NewsTags) {}
 
-    constructor(@InjectModel(NewsTags) private NewsTagsORM:typeof NewsTags){
-
-    }
-
-    async createAssotiation(assotiation:createAssotiationDto):Promise<NewsTags>{
-        return await this.NewsTagsORM.create(assotiation)
-    }
+  async createAssotiation(
+    assotiation: createAssotiationDto,
+  ): Promise<NewsTags> {
+    console.log('Assot in service NewsTags', assotiation);
+    return await this.NewsTagsORM.create(assotiation);
+  }
 }
