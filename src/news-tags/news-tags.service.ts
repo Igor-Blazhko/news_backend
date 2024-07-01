@@ -10,7 +10,6 @@ export class NewsTagsService {
   async createAssotiation(
     assotiation: createAssotiationDto,
   ): Promise<NewsTags> {
-    console.log('Assot in service NewsTags', assotiation);
     return await this.NewsTagsORM.create(assotiation);
   }
 }

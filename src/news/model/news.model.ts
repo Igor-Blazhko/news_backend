@@ -1,5 +1,4 @@
-import { ApiOperation } from '@nestjs/swagger';
-import { table } from 'console';
+import { ApiProperty } from '@nestjs/swagger';
 import {
   BelongsTo,
   BelongsToMany,
@@ -21,6 +20,7 @@ export interface CreateNews {
 
 @Table({ tableName: 'News' })
 export class New extends Model<New, CreateNews> {
+  @ApiProperty({ example: '1', description: 'Уникальный id новости' })
   @Column({
     type: DataType.INTEGER,
     unique: true,
@@ -30,12 +30,15 @@ export class New extends Model<New, CreateNews> {
   })
   id: number;
 
+  @ApiProperty({ example: 'Заголовок', description: 'Заголовок статьи' })
   @Column({ type: DataType.INTEGER, allowNull: false })
   article: string;
 
+  @ApiProperty({ example: 'Текст', description: 'Текст статьи' })
   @Column({ type: DataType.INTEGER, allowNull: false })
   text: string;
 
+  @ApiProperty({ example: '1', description: 'id создателя' })
   @ForeignKey(() => User)
   @Column({ type: DataType.INTEGER, allowNull: false })
   Userid: number;
