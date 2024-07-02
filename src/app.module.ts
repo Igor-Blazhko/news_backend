@@ -16,6 +16,8 @@ import { NewsTags } from './news-tags/news-tags.model';
 import { Comment } from './comments/model/comments.model';
 import { UploadfileModule } from './uploadfile/uploadfile.module';
 import { Image } from './uploadfile/model/uploadfile.model';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import  * as path  from 'path';
 
 @Module({
   controllers: [AppController],
@@ -36,6 +38,9 @@ import { Image } from './uploadfile/model/uploadfile.model';
         models: [User, New, Tag, NewsTags, Comment, Image],
       }),
       inject: [ConfigService],
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: path.resolve(__dirname, 'static'),
     }),
     NewsModule,
     CommentsModule,

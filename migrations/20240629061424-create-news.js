@@ -19,6 +19,9 @@ module.exports = {
         allowNull: false,
         type: Sequelize.INTEGER,
       },
+      ImageId: {
+        type: Sequelize.INTEGER,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

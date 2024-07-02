@@ -8,7 +8,7 @@ import { JwtService as JWTS } from '@nestjs/jwt';
 import { User } from 'src/users/models/users.model';
 import { UsersService } from 'src/users/users.service';
 import { ObjectToken } from './dto/auth.dto';
-import { CreateUserDto } from 'src/users/dto/users.dto';
+import { CreateUserDto, UserWithoutPass } from 'src/users/dto/users.dto';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -74,7 +74,7 @@ export class AuthService {
     }
   }
 
-  async GetUserByToken(Token): Promise<Omit<User, 'password'>> {
+  async GetUserByToken(Token): Promise<UserWithoutPass> {
     return await this.JwtService.verify(Token);
   }
 }

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { New } from './model/news.model';
 import { createNewsDto, createNewsWithTagDto } from './dto/news.dto';
@@ -11,6 +11,9 @@ import { AuthService as AuthS } from 'src/auth/auth.service';
 import { TagsService as TagsS } from 'src/tags/tags.service';
 import { NewsTagsService as NewsS } from 'src/news-tags/news-tags.service';
 import { Comment } from 'src/comments/model/comments.model';
+import { UploadfileService } from 'src/uploadfile/uploadfile.service';
+import { UserWithoutPass } from 'src/users/dto/users.dto';
+import { Image } from 'src/uploadfile/model/uploadfile.model';
 
 @Injectable()
 export class NewsService {
@@ -19,21 +22,31 @@ export class NewsService {
     private AuthService: AuthS,
     private TagsService: TagsS,
     private NewsTagsService: NewsS,
+    private UploadService:UploadfileService,
   ) {}
 
   async createNews(
     newsDto: createNewsWithTagDto,
     request: Req,
+    file: Express.Multer.File,
   ): Promise<string | Error> {
     try {
       const token: string | undefined = this.extractTokenFromHeader(request);
-      const payload: Omit<User, 'password'> =
+      if (token === undefined){
+        throw new HttpException('Невалидный токен пользователя', HttpStatus.UNAUTHORIZED)
+      }
+      const payload:UserWithoutPass =
         await this.AuthService.GetUserByToken(token);
-
+      
+      const Newfile = await this.UploadService.saveFilePath(file);
+      if (!(Newfile instanceof Image)){
+        throw Newfile  
+      };
       const createNewsDTO: createNewsDto = {
         article: newsDto.article,
         text: newsDto.text,
         Userid: payload.id,
+        ImageId: Number(Newfile.id),
       };
       const NewPost: New = await this.NewORM.create(createNewsDTO);
       const tags: CreateTagDto[] = newsDto.Tags;
@@ -75,6 +88,10 @@ export class NewsService {
 
           order: [['createdAt', 'DESC']],
         },
+        {
+          model: Image,
+          attributes: ['path'],
+        }
       ],
       order: [['createdAt', 'DESC']],
     });

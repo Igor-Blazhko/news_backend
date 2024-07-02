@@ -12,12 +12,14 @@ import {
 import { Comment } from 'src/comments/model/comments.model';
 import { NewsTags } from 'src/news-tags/news-tags.model';
 import { Tag } from 'src/tags/model/tags.model';
+import { Image } from 'src/uploadfile/model/uploadfile.model';
 import { User } from 'src/users/models/users.model';
 
 export interface CreateNews {
   article: string;
   text: string;
   UserId?: number;
+  ImageId?: number;
 }
 
 @Table({ tableName: 'News' })
@@ -44,6 +46,11 @@ export class New extends Model<New, CreateNews> {
   @ForeignKey(() => User)
   @Column({ type: DataType.INTEGER, allowNull: false })
   Userid: number;
+  
+  @ApiProperty({ example: '1', description: 'id картинки' })
+  @ForeignKey(() => Image)
+  @Column({ type: DataType.INTEGER, allowNull: false })
+  Imageid: number;
 
   @BelongsTo(() => User)
   author: User;

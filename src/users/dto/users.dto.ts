@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsString } from "class-validator";
-import { createUser } from '../models/users.model'
+import { User, createUser } from '../models/users.model'
 import { ApiProperty } from "@nestjs/swagger";
 
 export class CreateUserDto implements createUser{
@@ -21,4 +21,4 @@ export class CreateUserDto implements createUser{
     readonly sername: string;
 }
 
-
+export type UserWithoutPass =  Omit<User, 'password'>

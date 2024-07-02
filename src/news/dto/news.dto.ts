@@ -51,4 +51,12 @@ export class createNewsDto implements CreateNews {
     description: 'Id user',
   })
   readonly Userid: number;
+
+  @IsNotEmpty()
+  @IsString()
+  @ApiProperty({
+    example: '1',
+    description: 'Id user',
+  })
+  readonly ImageId: number;
 }

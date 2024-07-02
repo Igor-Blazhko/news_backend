@@ -5,7 +5,6 @@ import {
   Model,
   Table,
 } from 'sequelize-typescript';
-import { User } from 'src/users/models/users.model';
 
 export interface CreatePath {
   readonly path: string;
@@ -29,11 +28,4 @@ export class Image extends Model<Image, CreatePath> {
     allowNull: false,
   })
   path: string;
-
-  @ForeignKey(() => User)
-  @Column({
-    type: DataType.INTEGER,
-    allowNull: false,
-  })
-  UserId: number;
 }
