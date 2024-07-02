@@ -64,4 +64,11 @@ export class UploadfileService {
     }
   }
 
+  async getFileById(id:number):Promise<Image>{
+    return this.ImageORM.findOne({
+      where:{
+        id: id,
+      }
+    })
+  }
 }
