@@ -10,7 +10,8 @@ import { AuthGuard } from 'src/auth/auth.guard';
 import { Request as Req } from 'express';
 import { NewsService as service } from './news.service';
 import { createNewsWithTagDto } from './dto/news.dto';
-
+import { ApiTags } from '@nestjs/swagger';
+@ApiTags('Работа с новостями')
 @Controller('news')
 export class NewsController {
   constructor(private NewsService: service) {}

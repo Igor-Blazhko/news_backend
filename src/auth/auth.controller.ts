@@ -7,24 +7,22 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { AuthService } from './auth.service';
-import { UsersService } from 'src/users/users.service';
+import { AuthService as AuthS } from './auth.service';
 import { ObjectToken, signInDto } from './dto/auth.dto';
 import { AuthGuard } from './auth.guard';
-import { User } from 'src/users/models/users.model';
 import { CreateUserDto } from 'src/users/dto/users.dto';
 
 @ApiTags('Авторизация')
 @Controller('auth/')
 export class AuthController {
-  constructor(private AuthService: AuthService) {}
+  constructor(private AuthService: AuthS) {}
 
   @ApiOperation({ summary: 'Auth user' })
   @ApiResponse({ status: 200, type: ObjectToken })
   @Post('login')
-  signIn(@Body() signInDto: signInDto): Promise<ObjectToken> {
-    const login = signInDto.login;
-    const password = signInDto.password;
+  signIn(@Body() signInDTO: signInDto): Promise<ObjectToken> {
+    const login = signInDTO.login;
+    const password = signInDTO.password;
     return this.AuthService.signIn(login, password);
   }
 

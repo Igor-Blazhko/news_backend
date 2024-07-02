@@ -5,9 +5,11 @@ import {
   Column,
   DataType,
   ForeignKey,
+  HasMany,
   Model,
   Table,
 } from 'sequelize-typescript';
+import { Comment } from 'src/comments/model/comments.model';
 import { NewsTags } from 'src/news-tags/news-tags.model';
 import { Tag } from 'src/tags/model/tags.model';
 import { User } from 'src/users/models/users.model';
@@ -31,11 +33,11 @@ export class New extends Model<New, CreateNews> {
   id: number;
 
   @ApiProperty({ example: 'Заголовок', description: 'Заголовок статьи' })
-  @Column({ type: DataType.INTEGER, allowNull: false })
+  @Column({ type: DataType.STRING, allowNull: false })
   article: string;
 
   @ApiProperty({ example: 'Текст', description: 'Текст статьи' })
-  @Column({ type: DataType.INTEGER, allowNull: false })
+  @Column({ type: DataType.STRING, allowNull: false })
   text: string;
 
   @ApiProperty({ example: '1', description: 'id создателя' })
@@ -48,4 +50,9 @@ export class New extends Model<New, CreateNews> {
 
   @BelongsToMany(() => Tag, () => NewsTags)
   tags: Tag[];
+
+  @HasMany(() => Comment, {
+    foreignKey: 'PostId',
+  })
+  comments: Comment[];
 }

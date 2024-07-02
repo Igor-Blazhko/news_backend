@@ -26,4 +26,6 @@ export class Tag extends Model<Tag, CreateTags> {
   @Column({ type: DataType.INTEGER, allowNull: false, unique: true })
   nametag: string;
 
+  @BelongsToMany(() => New, () => NewsTags)
+  news: New[];
 }

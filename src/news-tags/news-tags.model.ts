@@ -1,8 +1,4 @@
-import { ApiOperation } from '@nestjs/swagger';
-import { table } from 'console';
 import {
-  BelongsTo,
-  BelongsToMany,
   Column,
   DataType,
   ForeignKey,
@@ -11,7 +7,6 @@ import {
 } from 'sequelize-typescript';
 import { New } from 'src/news/model/news.model';
 import { Tag } from 'src/tags/model/tags.model';
-import { User } from 'src/users/models/users.model';
 
 export interface TagsPostsCreation {
   idPost: number;
