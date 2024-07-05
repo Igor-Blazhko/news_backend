@@ -6,6 +6,7 @@ import {
   DataType,
   ForeignKey,
   HasMany,
+  HasOne,
   Model,
   Table,
 } from 'sequelize-typescript';
@@ -45,12 +46,12 @@ export class New extends Model<New, CreateNews> {
   @ApiProperty({ example: '1', description: 'id создателя' })
   @ForeignKey(() => User)
   @Column({ type: DataType.INTEGER, allowNull: false })
-  Userid: number;
-  
+  UserId: number;
+
   @ApiProperty({ example: '1', description: 'id картинки' })
   @ForeignKey(() => Image)
   @Column({ type: DataType.INTEGER, allowNull: false })
-  Imageid: number;
+  ImageId: number;
 
   @BelongsTo(() => User)
   author: User;
@@ -62,4 +63,7 @@ export class New extends Model<New, CreateNews> {
     foreignKey: 'PostId',
   })
   comments: Comment[];
+
+  @HasOne(() => Image, 'id')
+  image: Image;
 }

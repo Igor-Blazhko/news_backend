@@ -12,7 +12,6 @@ import { TagsService as TagsS } from 'src/tags/tags.service';
 import { NewsTagsService as NewsS } from 'src/news-tags/news-tags.service';
 import { Comment } from 'src/comments/model/comments.model';
 import { UploadfileService } from 'src/uploadfile/uploadfile.service';
-import { UserWithoutPass } from 'src/users/dto/users.dto';
 import { Image } from 'src/uploadfile/model/uploadfile.model';
 
 @Injectable()
@@ -22,33 +21,38 @@ export class NewsService {
     private AuthService: AuthS,
     private TagsService: TagsS,
     private NewsTagsService: NewsS,
-    private UploadService:UploadfileService,
+    private UploadService: UploadfileService,
   ) {}
 
   async createNews(
     newsDto: createNewsWithTagDto,
-    request: Req,
     file: Express.Multer.File,
   ): Promise<string | Error> {
+    console.log(newsDto);
     try {
-      const token: string | undefined = this.extractTokenFromHeader(request);
-      if (token === undefined){
-        throw new HttpException('Невалидный токен пользователя', HttpStatus.UNAUTHORIZED)
+      const Newfile: Image | Error =
+        await this.UploadService.saveFilePath(file);
+      if (!(Newfile instanceof Image)) {
+        throw new HttpException(
+          'Error upload file',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
       }
-      const payload:UserWithoutPass =
-        await this.AuthService.GetUserByToken(token);
-      
-      const Newfile = await this.UploadService.saveFilePath(file);
-      if (!(Newfile instanceof Image)){
-        throw Newfile  
-      };
       const createNewsDTO: createNewsDto = {
         article: newsDto.article,
         text: newsDto.text,
-        Userid: payload.id,
+        UserId: newsDto.User.id,
         ImageId: Number(Newfile.id),
       };
+      console.log(createNewsDTO);
       const NewPost: New = await this.NewORM.create(createNewsDTO);
+      if (!(NewPost instanceof New)) {
+        throw new HttpException(
+          'Ошибка записи поста!',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+      console.log('newpost', NewPost);
       const tags: CreateTagDto[] = newsDto.Tags;
       await tags.map(async (tag: CreateTagDto): Promise<void> => {
         const Tag: Tag = await this.TagsService.createTag(tag);
@@ -58,20 +62,21 @@ export class NewsService {
         };
         await this.NewsTagsService.createAssociation(createAssociationDTO);
       });
-      return 'Successful create';
+      return new HttpException('Successful', HttpStatus.CREATED);
     } catch (error) {
       return error;
     } finally {
     }
   }
 
-  async getOneNews(id: keyof User): Promise<New[]> {
+  async getOneNews(id: keyof New): Promise<New[]> {
     return await this.NewORM.findAll({
       where: {
         id: id,
       },
       include: [
-        { model: Tag, attributes: ['nametag'] },
+        { model: Tag, attributes: ['nametag'], through: { attributes: [] } },
+
         {
           model: User,
           attributes: ['id', 'login', 'name'],
@@ -91,7 +96,7 @@ export class NewsService {
         {
           model: Image,
           attributes: ['path'],
-        }
+        },
       ],
       order: [['createdAt', 'DESC']],
     });
@@ -100,13 +105,15 @@ export class NewsService {
   async getAllNews(): Promise<New[]> {
     const Post = this.NewORM.findAll({
       include: [
-        { model: Tag, attributes: ['nametag'] },
+        { model: Tag, attributes: ['nametag'], through: { attributes: [] } },
         {
           model: User,
           attributes: ['id', 'login', 'name'],
         },
+        { model: Image, attributes: ['path'] },
       ],
       order: [['createdAt', 'DESC']],
+      attributes: ['id', 'article', 'text'],
     });
     return Post;
   }

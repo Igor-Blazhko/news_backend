@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
 import { CreateNews } from '../model/news.model';
 import { CreateTagDto } from 'src/tags/dto/tags.dto';
+import { User } from 'src/users/models/users.model';
 
 interface CreateNewsWithTags extends CreateNews {
   readonly Tags: CreateTagDto[];
@@ -28,6 +29,10 @@ export class createNewsWithTagDto implements CreateNewsWithTags {
     description: ' Массив объектов Тэга',
   })
   Tags: CreateTagDto[];
+
+  @IsNotEmpty()
+  @IsString()
+  User?: User;
 }
 
 export class createNewsDto implements CreateNews {
@@ -50,7 +55,7 @@ export class createNewsDto implements CreateNews {
     example: '1',
     description: 'Id user',
   })
-  readonly Userid: number;
+  readonly UserId: number;
 
   @IsNotEmpty()
   @IsString()

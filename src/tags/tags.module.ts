@@ -5,11 +5,9 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { Tag } from './model/tags.model';
 
 @Module({
-  imports:[
-    SequelizeModule.forFeature([Tag]),
-  ],
+  imports: [SequelizeModule.forFeature([Tag])],
   providers: [TagsService],
   controllers: [TagsController],
-  exports:[TagsService]
+  exports: [TagsService],
 })
 export class TagsModule {}

@@ -7,6 +7,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { AuthModule } from 'src/auth/auth.module';
 import { TagsModule } from 'src/tags/tags.module';
 import { NewsTagsModule } from 'src/news-tags/news-tags.module';
+import { UploadfileModule } from 'src/uploadfile/uploadfile.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { NewsTagsModule } from 'src/news-tags/news-tags.module';
     AuthModule,
     TagsModule,
     NewsTagsModule,
+    UploadfileModule,
   ],
   providers: [NewsService],
   controllers: [NewsController],

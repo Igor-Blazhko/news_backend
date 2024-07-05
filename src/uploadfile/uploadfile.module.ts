@@ -8,5 +8,6 @@ import { Image } from './model/uploadfile.model';
   imports: [SequelizeModule.forFeature([Image])],
   providers: [UploadfileService],
   controllers: [UploadfileController],
+  exports: [UploadfileService],
 })
 export class UploadfileModule {}

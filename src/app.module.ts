@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, ValidationPipe } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { NewsModule } from './news/news.module';
@@ -17,7 +17,8 @@ import { Comment } from './comments/model/comments.model';
 import { UploadfileModule } from './uploadfile/uploadfile.module';
 import { Image } from './uploadfile/model/uploadfile.model';
 import { ServeStaticModule } from '@nestjs/serve-static';
-import  * as path  from 'path';
+import * as path from 'path';
+import { APP_PIPE } from '@nestjs/core';
 
 @Module({
   controllers: [AppController],
@@ -40,7 +41,7 @@ import  * as path  from 'path';
       inject: [ConfigService],
     }),
     ServeStaticModule.forRoot({
-      rootPath: path.resolve(__dirname, 'static'),
+      rootPath: path.resolve(__dirname, '..', 'static'),
     }),
     NewsModule,
     CommentsModule,
@@ -49,6 +50,12 @@ import  * as path  from 'path';
     AuthModule,
     NewsTagsModule,
     UploadfileModule,
+  ],
+  providers: [
+    {
+      provide: APP_PIPE,
+      useClass: ValidationPipe,
+    },
   ],
 })
 export class AppModule {}
