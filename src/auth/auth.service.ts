@@ -62,15 +62,18 @@ export class AuthService {
         ...userBodyRegister,
         password: hashPassword,
       });
-
+      console.log(user)
       if (user instanceof User) {
         return this.signIn(user.login, user?.password);
       }
+      else{
+        throw new HttpException(
+          'Ошибка работы с базой данных',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
     } catch (error) {
-      throw new HttpException(
-        'Ошибка работы с базой данных',
-        HttpStatus.BAD_REQUEST,
-      );
+      return error
     }
   }
 

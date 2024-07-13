@@ -25,41 +25,19 @@ async function start() {
     allowedHeaders: 'Content-Type, Accept',
   });
   await app.listen(PORT, '0.0.0.0', () => {
+    const host = os.networkInterfaces()['Ethernet'][1]['address'];
     console.log(
-      `Ready on ${os.hostname}:${PORT} or http://10.104.5.176:${PORT}/ or localhost:${PORT}`,
+      `Ready on ${os.hostname}:${PORT} or http://${host}:${PORT}/ or localhost:${PORT}`,
     );
     console.log(`PORT: ${PORT}`);
     console.log(`USER: ${process.env.POSTGRES_USERNAME}`);
     console.log(`PASS: ${process.env.POSTGRES_PASSWORD}`);
     console.log(`DB NAME: ${process.env.POSTGRES_DB_NAME}`);
-    console.log(`PATH: ${process.env.PATH_PROJ}`);
     console.log(`PID: ${process.pid}`);
-    console.log(`TIILE: ${process.title}`);
-    console.log(`ARCH: ${os.arch()}`);
-    os.cpus().forEach((item: os.CpuInfo) => {
-      console.log(`CPU: ${item.model}`);
-    });
     console.log(`UPTIME: ${process.uptime()}`);
     console.log(
       `MEMORY: ${process.memoryUsage().arrayBuffers}bt from ${os.freemem}bt`,
     );
-    console.log('Process ARG:');
-    process.argv.forEach((val, index) => {
-      console.log(`${index}: ${val}`);
-    });
-    console.log('-------------------');
-    const x = os.networkInterfaces();
-    for (const key in x) {
-      const y = x[key];
-      for (const key1 in y) {
-        const z = y[key1];
-        for (const key2 in z) {
-          console.log(`${key2}: ${z[key2]}`);
-        }
-        console.log('<->');
-      }
-    }
-    console.log('-------------------');
   });
   process.on('exit', (code) => {
     console.log(`About to exit with code: ${code}`);
@@ -67,5 +45,3 @@ async function start() {
 }
 
 start();
-
-//setTimeout(process.exit, 0, 112);

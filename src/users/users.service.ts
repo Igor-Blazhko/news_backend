@@ -16,8 +16,8 @@ export class UsersService {
             }
 
             const user = await this.UserORM.create(userBodyRegisterModifed)
-            if(!user){
-                throw new Error('Ошибка работы с базой данных1')
+            if (!(user instanceof User)){
+                throw new HttpException('Ошибка работы с базой данных во время добавления', HttpStatus.INTERNAL_SERVER_ERROR)
             }
             return user
         }catch(error){

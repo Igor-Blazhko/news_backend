@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  HttpException,
   Post,
   Request,
   UseGuards,
@@ -29,7 +30,7 @@ export class AuthController {
   @ApiOperation({ summary: 'Create user' })
   @ApiResponse({ status: 200, type: ObjectToken })
   @Post('registration')
-  async CreateUser(@Body() registerDTO: CreateUserDto): Promise<ObjectToken> {
+  async CreateUser(@Body() registerDTO: CreateUserDto): Promise<ObjectToken | HttpException> {
     return this.AuthService.CreateUser(registerDTO);
   }
 
