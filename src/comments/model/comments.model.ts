@@ -8,12 +8,14 @@ import {
   Table,
 } from 'sequelize-typescript';
 import { New } from 'src/news/model/news.model';
+import { UserWithoutPass } from 'src/users/dto/users.dto';
 import { User } from 'src/users/models/users.model';
 
 export interface NewComment {
   readonly text: string;
-  readonly UserId: number;
   readonly PostId: number;
+  readonly UserId: number;
+  readonly User?: UserWithoutPass;
 }
 
 @Table({ tableName: 'Comments' })
@@ -54,6 +56,6 @@ export class Comment extends Model<Comment, NewComment> {
   })
   PostId: number;
 
-  @BelongsTo(() => User)
+  @BelongsTo(() => User, 'id')
   author: User;
 }

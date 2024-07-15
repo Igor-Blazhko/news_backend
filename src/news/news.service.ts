@@ -69,13 +69,17 @@ export class NewsService {
     }
   }
 
-  async getOneNews(id: keyof New): Promise<New[]> {
-    return await this.NewORM.findAll({
+  async getOneNews(id: number): Promise<New> {
+    return await this.NewORM.findOne({
       where: {
-        id: id,
+        id,
       },
       include: [
-        { model: Tag, attributes: ['nametag'], through: { attributes: [] } },
+        {
+          model: Tag,
+          attributes: ['id', 'nametag'],
+          through: { attributes: [] },
+        },
 
         {
           model: User,

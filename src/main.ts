@@ -22,10 +22,10 @@ async function start() {
   app.enableCors({
     origin: '*', // разрешить только этот источник
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE, OPTIONS',
-    allowedHeaders: 'Content-Type, Accept',
+    allowedHeaders: 'Content-Type, Accept, Authorization',
   });
   await app.listen(PORT, '0.0.0.0', () => {
-    const host = os.networkInterfaces()['Ethernet'][1]['address'];
+    const host = '1'; //os.networkInterfaces()['Ethernet'][1]['address'];
     console.log(
       `Ready on ${os.hostname}:${PORT} or http://${host}:${PORT}/ or localhost:${PORT}`,
     );

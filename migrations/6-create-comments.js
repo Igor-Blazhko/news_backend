@@ -11,25 +11,27 @@ module.exports = {
       },
       text: {
         allowNull: false,
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
       },
       PostId: {
-        references:{
-          model:{
+        references: {
+          model: {
             tableName: 'News',
             schema: 'public',
           },
-          key :'id'},
+          key: 'id',
+        },
         allowNull: false,
         type: Sequelize.INTEGER,
       },
       UserId: {
-        references:{
-          model:{
+        references: {
+          model: {
             tableName: 'Users',
             schema: 'public',
           },
-          key :'id'},
+          key: 'id',
+        },
         allowNull: false,
         type: Sequelize.INTEGER,
       },

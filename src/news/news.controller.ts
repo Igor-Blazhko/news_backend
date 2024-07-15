@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Post,
+  Query,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -10,9 +11,10 @@ import {
 import { AuthGuard } from 'src/auth/auth.guard';
 import { NewsService as service } from './news.service';
 import { createNewsWithTagDto } from './dto/news.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AddUser } from 'src/auth/adduser.inceptor';
+import { New } from './model/news.model';
 @ApiTags('Работа с новостями')
 @Controller('news')
 export class NewsController {
@@ -22,15 +24,18 @@ export class NewsController {
   @UseInterceptors(AddUser)
   @UseInterceptors(FileInterceptor('file'))
   @Post()
-  async createNews(
+  createNews(
     @Body() newsDto: createNewsWithTagDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    return await this.NewsService.createNews(newsDto, file);
+    return this.NewsService.createNews(newsDto, file);
   }
 
+  @ApiOperation({ summary: 'Get all news or one by ID' })
+  @ApiResponse({ status: 200, type: New })
   @Get()
-  async getAllNews() {
-    return this.NewsService.getAllNews();
+  async getAllNews(@Query('id') id?: number) {
+    if (id) return this.NewsService.getOneNews(id);
+    else return this.NewsService.getAllNews();
   }
 }
