@@ -15,6 +15,7 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AddUser } from 'src/auth/adduser.inceptor';
 import { New } from './model/news.model';
+import { Filter } from './Enum';
 @ApiTags('Работа с новостями')
 @Controller('news')
 export class NewsController {
@@ -31,11 +32,23 @@ export class NewsController {
     return this.NewsService.createNews(newsDto, file);
   }
 
-  @ApiOperation({ summary: 'Get all news or one by ID' })
+  @ApiOperation({ summary: 'Get all news or by filter or one by ID' })
   @ApiResponse({ status: 200, type: New })
   @Get()
-  async getAllNews(@Query('id') id?: number) {
+  async getAllNews(
+    @Query('id') id?: number,
+    @Query('page') page?: number,
+    @Query('filter') filter?: string,
+    @Query('typeFilter') typeFilter?: Filter,
+  ) {
     if (id) return this.NewsService.getOneNews(id);
-    else return this.NewsService.getAllNews();
+    else return this.NewsService.getAllNews(page, filter, typeFilter);
+  }
+
+  @ApiOperation({ summary: 'Get count Page' })
+  @ApiResponse({ status: 200 })
+  @Get('count')
+  getCountPage() {
+    return this.NewsService.getCountPage();
   }
 }

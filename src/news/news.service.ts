@@ -13,7 +13,10 @@ import { NewsTagsService as NewsS } from 'src/news-tags/news-tags.service';
 import { Comment } from 'src/comments/model/comments.model';
 import { UploadfileService } from 'src/uploadfile/uploadfile.service';
 import { Image } from 'src/uploadfile/model/uploadfile.model';
+import { Filter } from './Enum';
+import { Op } from 'sequelize';
 
+const LIMIT_on_PAGE = 5;
 @Injectable()
 export class NewsService {
   constructor(
@@ -28,7 +31,6 @@ export class NewsService {
     newsDto: createNewsWithTagDto,
     file: Express.Multer.File,
   ): Promise<string | Error> {
-    console.log(newsDto);
     try {
       const Newfile: Image | Error =
         await this.UploadService.saveFilePath(file);
@@ -44,7 +46,6 @@ export class NewsService {
         UserId: newsDto.User.id,
         ImageId: Number(Newfile.id),
       };
-      console.log(createNewsDTO);
       const NewPost: New = await this.NewORM.create(createNewsDTO);
       if (!(NewPost instanceof New)) {
         throw new HttpException(
@@ -52,8 +53,12 @@ export class NewsService {
           HttpStatus.INTERNAL_SERVER_ERROR,
         );
       }
-      console.log('newpost', NewPost);
-      const tags: CreateTagDto[] = newsDto.Tags;
+      console.log('tags1', newsDto.Tags);
+      const tags: CreateTagDto[] = newsDto.Tags.map((item: string) => {
+        return { nametag: item };
+      });
+      console.log('--------------------');
+      console.log('tags2', tags);
       await tags.map(async (tag: CreateTagDto): Promise<void> => {
         const Tag: Tag = await this.TagsService.createTag(tag);
         const createAssociationDTO: createAssociationDto = {
@@ -106,22 +111,104 @@ export class NewsService {
     });
   }
 
-  async getAllNews(): Promise<New[]> {
-    const Post = this.NewORM.findAll({
+  async getAllNews(
+    page: number,
+    filter: string,
+    typeFilter: Filter,
+  ): Promise<{ posts: New[]; countPage: number }> {
+    let limit = undefined;
+    let offset = undefined;
+    if (page) {
+      limit = LIMIT_on_PAGE;
+      offset = (page - 1) * LIMIT_on_PAGE;
+    }
+
+    let where = undefined;
+    let whereTag = undefined;
+    let whereUser = undefined;
+    if (filter && typeFilter) {
+      switch (typeFilter) {
+        case Filter.All:
+          const postByTags = await this.getAllNews(
+            undefined,
+            filter,
+            Filter.Tags,
+          );
+          const postByUser = await this.getAllNews(
+            undefined,
+            filter,
+            Filter.User,
+          );
+          const postByTitle = await this.getAllNews(
+            undefined,
+            filter,
+            Filter.Title,
+          );
+          const allPosts = [
+            ...postByTags.posts,
+            ...postByUser.posts,
+            ...postByTitle.posts,
+          ];
+          const posts = allPosts.slice(offset, offset + limit);
+          return {
+            posts: posts,
+            countPage: Math.ceil(allPosts.length / LIMIT_on_PAGE),
+          };
+        case Filter.Tags:
+          whereTag = {
+            nametag: {
+              [Op.startsWith]: filter,
+            },
+          };
+          break;
+        case Filter.User:
+          whereUser = {
+            login: {
+              [Op.startsWith]: filter.toLowerCase(),
+            },
+          };
+          break;
+        case Filter.Title:
+          where = {
+            article: {
+              [Op.startsWith]: filter,
+            },
+          };
+          break;
+        default:
+          break;
+      }
+    }
+
+    const Post = await this.NewORM.findAll({
+      where,
       include: [
-        { model: Tag, attributes: ['nametag'], through: { attributes: [] } },
+        {
+          model: Tag,
+          attributes: ['nametag'],
+          through: { attributes: [] },
+          where: whereTag,
+        },
         {
           model: User,
           attributes: ['id', 'login', 'name'],
+          where: whereUser,
         },
         { model: Image, attributes: ['path'] },
       ],
+      limit,
+      offset,
       order: [['createdAt', 'DESC']],
-      attributes: ['id', 'article', 'text'],
+      attributes: ['id', 'article', 'text', 'createdAt'],
     });
-    return Post;
+    const countPage = await this.getCountPage();
+    return { posts: Post, countPage: countPage };
   }
 
+  async getCountPage() {
+    const count = +(await this.NewORM.count()) / LIMIT_on_PAGE;
+    return Math.ceil(count);
+  }
   async getAllNewsByUser(UserORM: User): Promise<New[]> {
     return this.NewORM.findAll({
       where: {
