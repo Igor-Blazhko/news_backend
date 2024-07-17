@@ -126,6 +126,8 @@ export class NewsService {
     let where = undefined;
     let whereTag = undefined;
     let whereUser = undefined;
+
+    let countPage = await this.getCountPage();
     if (filter && typeFilter) {
       switch (typeFilter) {
         case Filter.All:
@@ -160,6 +162,7 @@ export class NewsService {
               [Op.startsWith]: filter,
             },
           };
+          countPage = await this.getCountPage(where, whereTag);
           break;
         case Filter.User:
           whereUser = {
@@ -167,6 +170,8 @@ export class NewsService {
               [Op.startsWith]: filter.toLowerCase(),
             },
           };
+
+          countPage = await this.getCountPage(where, whereTag, whereUser);
           break;
         case Filter.Title:
           where = {
@@ -174,6 +179,7 @@ export class NewsService {
               [Op.startsWith]: filter,
             },
           };
+          countPage = await this.getCountPage(where);
           break;
         default:
           break;
@@ -201,13 +207,47 @@ export class NewsService {
       order: [['createdAt', 'DESC']],
       attributes: ['id', 'article', 'text', 'createdAt'],
     });
-    const countPage = await this.getCountPage();
+    // const countPage = await this.getCountPage(where, whereTag, whereUser);
     return { posts: Post, countPage: countPage };
   }
 
-  async getCountPage() {
-    const count = +(await this.NewORM.count()) / LIMIT_on_PAGE;
-    return Math.ceil(count);
+  async getCountPage(
+    whereMain = undefined,
+    whereTag = undefined,
+    whereUser = undefined,
+  ) {
+    if (whereMain) {
+      const count = +(await this.NewORM.count({
+        where: whereMain,
+      }));
+      return Math.ceil(count / LIMIT_on_PAGE);
+    }
+
+    if (whereTag) {
+      const count = +(await this.NewORM.count({
+        include: [
+          {
+            model: Tag,
+            where: whereTag,
+          },
+        ],
+      }));
+      return Math.ceil(count / LIMIT_on_PAGE);
+    }
+    if (whereUser) {
+      const count = +(await this.NewORM.count({
+        include: [
+          {
+            model: User,
+            where: whereUser,
+          },
+        ],
+      }));
+      return Math.ceil(count / LIMIT_on_PAGE);
+    }
+
+    const count = +(await this.NewORM.count());
+    return Math.ceil(count / LIMIT_on_PAGE);
   }
   async getAllNewsByUser(UserORM: User): Promise<New[]> {
     return this.NewORM.findAll({

@@ -44,11 +44,4 @@ export class NewsController {
     if (id) return this.NewsService.getOneNews(id);
     else return this.NewsService.getAllNews(page, filter, typeFilter);
   }
-
-  @ApiOperation({ summary: 'Get count Page' })
-  @ApiResponse({ status: 200 })
-  @Get('count')
-  getCountPage() {
-    return this.NewsService.getCountPage();
-  }
 }
