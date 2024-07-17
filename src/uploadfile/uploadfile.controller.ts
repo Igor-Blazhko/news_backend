@@ -1,6 +1,7 @@
 import {
   Controller,
   Get,
+  ParseIntPipe,
   Post,
   Query,
   Res,
@@ -24,6 +25,10 @@ export class UploadfileController {
     return savedFile;
   }
 
+  @Get()
+  getFileById(@Query('id', ParseIntPipe) id: number) {
+    return this.UploadService.getFileById(id);
+  }
   @Get('download')
   async downloadFile(@Query('id') id: number, @Res() response: Response) {
     const pathFile: Image = await this.UploadService.getFileById(id);

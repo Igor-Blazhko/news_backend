@@ -77,7 +77,7 @@ export class NewsService {
   async getOneNews(id: number): Promise<New> {
     return await this.NewORM.findOne({
       where: {
-        id,
+        id: id,
       },
       include: [
         {
@@ -104,7 +104,6 @@ export class NewsService {
         },
         {
           model: Image,
-          attributes: ['path'],
         },
       ],
       order: [['createdAt', 'DESC']],
@@ -207,7 +206,6 @@ export class NewsService {
       order: [['createdAt', 'DESC']],
       attributes: ['id', 'article', 'text', 'createdAt'],
     });
-    // const countPage = await this.getCountPage(where, whereTag, whereUser);
     return { posts: Post, countPage: countPage };
   }
 

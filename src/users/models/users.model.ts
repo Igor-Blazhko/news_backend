@@ -35,4 +35,8 @@ export class User extends Model<User, createUser> {
   @ApiProperty({ example: 'Иванов', description: 'Фамилия пользоватея' })
   @Column({ type: DataType.STRING, allowNull: false })
   sername: string;
+
+  @ApiProperty({ example: '1', description: 'id аватара' })
+  @Column({ type: DataType.STRING })
+  avatarId: number;
 }

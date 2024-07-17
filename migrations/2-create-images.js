@@ -4,6 +4,7 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('Images', {
       id: {
+        unique: true,
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
@@ -11,15 +12,6 @@ module.exports = {
       },
       path: {
         type: Sequelize.STRING,
-      },
-      UserId: {
-        references:{
-        model: {
-          tableName: 'Users',
-          schema: 'public',
-        },
-        key :'id'},
-        type: Sequelize.INTEGER,
       },
       createdAt: {
         allowNull: false,

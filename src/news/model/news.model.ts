@@ -6,7 +6,6 @@ import {
   DataType,
   ForeignKey,
   HasMany,
-  HasOne,
   Model,
   Table,
 } from 'sequelize-typescript';
@@ -64,6 +63,6 @@ export class New extends Model<New, CreateNews> {
   })
   comments: Comment[];
 
-  @HasOne(() => Image, 'id')
+  @BelongsTo(() => Image)
   image: Image;
 }

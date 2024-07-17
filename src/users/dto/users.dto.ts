@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsEmpty, IsNotEmpty, IsString } from 'class-validator';
 import { User, createUser } from '../models/users.model';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -19,6 +19,26 @@ export class CreateUserDto implements createUser {
   @IsString()
   @ApiProperty({ example: 'Иванов', description: 'Фамилия пользоватея' })
   readonly sername: string;
+}
+
+export class UpdateUserDto {
+  @IsNotEmpty()
+  @IsString()
+  @ApiProperty({ example: 'Иван', description: 'имя пользоватея' })
+  readonly name: string;
+  @IsNotEmpty()
+  @IsString()
+  @ApiProperty({ example: 'Иванов', description: 'Фамилия пользоватея' })
+  readonly sername: string;
+}
+
+export class UpdateUserWithUserDto extends UpdateUserDto {
+  @IsNotEmpty()
+  readonly User: UserWithoutPass;
+}
+
+export class UpdateUserWithImgDto extends UpdateUserDto {
+  readonly avatarId: number;
 }
 
 export type UserWithoutPass = Omit<User, 'password'>;

@@ -30,7 +30,9 @@ export class AuthController {
   @ApiOperation({ summary: 'Create user' })
   @ApiResponse({ status: 200, type: ObjectToken })
   @Post('registration')
-  async CreateUser(@Body() registerDTO: CreateUserDto): Promise<ObjectToken | HttpException> {
+  async CreateUser(
+    @Body() registerDTO: CreateUserDto,
+  ): Promise<ObjectToken | HttpException> {
     return this.AuthService.CreateUser(registerDTO);
   }
 
