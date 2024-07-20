@@ -14,7 +14,7 @@ import { UploadfileModule } from 'src/uploadfile/uploadfile.module';
     JwtModule.register({
       secret: process.env.SECRET_KEY || 'SECRET',
       signOptions: {
-        expiresIn: '24h',
+        expiresIn: '5m',
       },
     }),
     UploadfileModule,

@@ -43,13 +43,9 @@ export class AuthService {
       if (user instanceof User) {
         const payload = {
           id: user.id,
-          login: user.login,
-          name: user.name,
-          sername: user.sername,
-          avatarId: user.avatarId,
         };
         const token = await this.JwtService.signAsync(payload);
-        const refresh = await this.RefreshToken.createToken();
+        const refresh = await this.RefreshToken.createToken(payload.id);
         return {
           access_token: token,
           refresh_token: refresh,
@@ -135,12 +131,10 @@ export class AuthService {
   }
 
   async refreshAccessToken(token: string): Promise<string | HttpException> {
-    if (this.RefreshToken.verifyToken(token))
-      return await this.RefreshToken.createToken();
+    if (this.RefreshToken.verifyToken(token)) {
+      const id = this.RefreshToken.getUserIdbyToken(token);
+      return await this.JwtService.signAsync({ id: id });
+    }
     return new HttpException('Refresh token invalid', HttpStatus.UNAUTHORIZED);
-  }
-
-  getData() {
-    return this.RefreshToken.getStorage;
   }
 }

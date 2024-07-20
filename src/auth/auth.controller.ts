@@ -51,12 +51,6 @@ export class AuthController {
   getProfile(@Request() req: Req) {
     return this.UserService.getUserById(req.body.User.id);
   }
-
-  @Get('data')
-  getData() {
-    return this.AuthService.getData();
-  }
-
   @Get('refreshToken')
   refreshAccessToken(@Query('token') token: string) {
     return this.AuthService.refreshAccessToken(token);
