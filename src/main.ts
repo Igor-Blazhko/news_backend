@@ -5,6 +5,10 @@ import * as os from 'os';
 import * as path from 'path';
 
 async function start() {
+  // const httpsOptions = {
+  //   key: fs.readFileSync(path.resolve(__dirname, '..', 'ssl', 'key.pem')),
+  //   cert: fs.readFileSync(path.resolve(__dirname, '..', 'ssl', 'cert.pem')),
+  // };
   const PORT = process.env.PORT || 3000;
   const app = await NestFactory.create(AppModule);
   process.env.PATH_PROJ = path.join(__dirname, '..');
@@ -19,14 +23,17 @@ async function start() {
 
   // Включение CORS с кастомными настройками
   app.enableCors({
-    origin: '*', // разрешить только этот источник
+    origin: 'http://localhost:5173', // разрешить только этот источник
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE, OPTIONS',
     allowedHeaders: 'Content-Type, Accept, Authorization',
+    credentials: true,
+    optionsSuccessStatus: 204,
   });
   await app.listen(
     PORT,
     /*'0.0.0.0' ,*/ () => {
       //const host = '1'; //os.networkInterfaces()['Ethernet'][1]['address'];
+
       console.log(
         `Ready on ${os.hostname}:${PORT} or http://10.104.5.176:${PORT}/ or localhost:${PORT}`,
       );

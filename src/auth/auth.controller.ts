@@ -3,8 +3,8 @@ import {
   Controller,
   Get,
   Post,
+  Query,
   Request,
-  Res,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -28,39 +28,21 @@ export class AuthController {
   @ApiOperation({ summary: 'Auth user' })
   @ApiResponse({ status: 200, type: ObjectToken })
   @Post('login')
-  async signIn(@Body() signInDTO: signInDto, @Res() res: Response) {
+  async signIn(@Body() signInDTO: signInDto) {
     const login = signInDTO.login;
     const password = signInDTO.password;
     const answer = await this.AuthService.signIn(login, password);
-    res.cookie('access_token', answer.access_token, {
-      expires: new Date(new Date().getTime() + 30 * 1000),
-      sameSite: 'strict',
-      httpOnly: true,
-    });
-    res.cookie('refresh_token', answer.refresh_token, {
-      expires: new Date(new Date().getTime() + 300 * 1000),
-      sameSite: 'strict',
-      httpOnly: true,
-    });
-    return res.status(204).end();
+    //this.setToken(res, answer);
+    return answer;
   }
 
   @ApiOperation({ summary: 'Create user' })
   @ApiResponse({ status: 200, type: ObjectToken })
   @Post('registration')
-  async CreateUser(@Body() registerDTO: CreateUserDto, @Res() res: Response) {
+  async CreateUser(@Body() registerDTO: CreateUserDto) {
     const answer = await this.AuthService.CreateUser(registerDTO);
-    res.cookie('access_token', answer.access_token, {
-      expires: new Date(new Date().getTime() + 30 * 1000),
-      sameSite: 'strict',
-      httpOnly: true,
-    });
-    res.cookie('refresh_token', answer.refresh_token, {
-      expires: new Date(new Date().getTime() + 300 * 1000),
-      sameSite: 'strict',
-      httpOnly: true,
-    });
-    return res.status(204).end();
+    //this.setToken(res, answer);
+    return answer;
   }
 
   @UseInterceptors(AddUser)
@@ -73,5 +55,26 @@ export class AuthController {
   @Get('data')
   getData() {
     return this.AuthService.getData();
+  }
+
+  @Get('refreshToken')
+  refreshAccessToken(@Query('token') token: string) {
+    return this.AuthService.refreshAccessToken(token);
+  }
+
+  private setToken(res: Response, objTokens: ObjectToken) {
+    res.cookie('access_token', objTokens.access_token, {
+      expires: new Date(new Date().getTime() + +process.env.LIFE_ACCESS_TOKEN),
+      secure: false,
+      sameSite: 'lax',
+      httpOnly: true,
+    });
+    res.cookie('refresh_token', objTokens.refresh_token, {
+      expires: new Date(new Date().getTime() + +process.env.LIFE_REFRESH_TOKEN),
+      secure: false,
+      sameSite: 'lax',
+      httpOnly: true,
+    });
+    return res;
   }
 }

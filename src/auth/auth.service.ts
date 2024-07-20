@@ -134,6 +134,12 @@ export class AuthService {
     }
   }
 
+  async refreshAccessToken(token: string): Promise<string | HttpException> {
+    if (this.RefreshToken.verifyToken(token))
+      return await this.RefreshToken.createToken();
+    return new HttpException('Refresh token invalid', HttpStatus.UNAUTHORIZED);
+  }
+
   getData() {
     return this.RefreshToken.getStorage;
   }

@@ -18,12 +18,12 @@ export class GoogleController {
     const domain = req.headers.referer;
     const answer = await this.AuthService.googleAuthorization(req.user);
     res.cookie('access_token', answer.access_token, {
-      expires: new Date(new Date().getTime() + 30 * 1000),
+      expires: new Date(new Date().getTime() + +process.env.LIFE_ACCESS_TOKEN),
       sameSite: 'strict',
       httpOnly: true,
     });
     res.cookie('refresh_token', answer.refresh_token, {
-      expires: new Date(new Date().getTime() + 300 * 1000),
+      expires: new Date(new Date().getTime() + +process.env.LIFE_REFRESH_TOKEN),
       sameSite: 'strict',
       httpOnly: true,
     });

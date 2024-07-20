@@ -38,7 +38,7 @@ export class UsersController {
   @ApiOperation({ summary: 'Get user by id' })
   @ApiResponse({ status: 200, type: User })
   @Get()
-  async getUserById(
+  async getUserByIdOrLogin(
     @Query('login') login?: string | undefined,
     @Query('id') id?: number | undefined,
   ): Promise<HttpException | UserWithoutPass[] | UserWithoutPass> {
