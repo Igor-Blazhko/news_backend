@@ -60,7 +60,9 @@ export class AuthService {
     }
   }
 
-  async CreateUser(userBodyRegister: CreateUserDto | createUser) {
+  async CreateUser(
+    userBodyRegister: CreateUserDto | createUser,
+  ): Promise<ObjectToken> {
     try {
       const candidate: User | Error = await this.UserService.getUserAtLogin(
         userBodyRegister.login,
@@ -80,7 +82,7 @@ export class AuthService {
         password: hashPassword,
       });
       if (user instanceof User) {
-        return this.signIn(user.login, user?.password);
+        return await this.signIn(user.login, user?.password);
       } else {
         throw new HttpException(
           'Ошибка работы с базой данных',
@@ -123,16 +125,7 @@ export class AuthService {
         const buffer = fs.createWriteStream(pathFile);
         await streamPipeline(res.body, buffer);
         const newImg = await this.UploadFileService.savePath(serverPath);
-
         userDTO.avatarId = newImg.id;
-
-        // const US = await this.UserService.CreateUser(userDTO);
-        // if (!(US instanceof User))
-        //   throw new HttpException(
-        //     'Ошибка работы базы данных',
-        //     HttpStatus.INTERNAL_SERVER_ERROR,
-        //   );
-        // return this.signIn(US.login, US.password);
       }
 
       return await this.CreateUser(userDTO);

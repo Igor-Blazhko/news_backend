@@ -14,6 +14,7 @@ export class RefreshTokenRepositories {
 
   async createToken() {
     const prhase: string = uuid.v4();
+    prhase.replace('$', '');
     const token: string = await bcrypt.hash(prhase, 10);
     this.data.push(token);
     this.deleteToken(token);
