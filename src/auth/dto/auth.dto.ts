@@ -15,7 +15,13 @@ export class signInDto {
 export class ObjectToken {
   @ApiProperty({
     example: 'eyJhbGc...kpXVCJ9.eyJ...z0.MK7Z-q67usKmC4tU7l...H0UACB2MQv3I',
-    description: 'Хэш Токе',
+    description: 'Хэш access Токен',
   })
   access_token: string;
+
+  @ApiProperty({
+    example: 'eyJhbGcasdas2H0UACB2MQv3I',
+    description: 'Хэш refresh Токен',
+  })
+  refresh_token: string;
 }

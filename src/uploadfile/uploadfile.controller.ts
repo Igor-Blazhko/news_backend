@@ -1,15 +1,5 @@
-import {
-  Controller,
-  Get,
-  ParseIntPipe,
-  Post,
-  Query,
-  Res,
-  UploadedFile,
-  UseInterceptors,
-} from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { Express, Response } from 'express';
+import { Controller, Get, ParseIntPipe, Query, Res } from '@nestjs/common';
+import { Response } from 'express';
 import { UploadfileService } from './uploadfile.service';
 import { Image } from './model/uploadfile.model';
 import * as path from 'path';
@@ -17,13 +7,6 @@ import * as path from 'path';
 @Controller('uploadfile')
 export class UploadfileController {
   constructor(private UploadService: UploadfileService) {}
-
-  @UseInterceptors(FileInterceptor('file'))
-  @Post()
-  async uploadFile(@UploadedFile() file: Express.Multer.File) {
-    const savedFile = await this.UploadService.saveFilePath(file);
-    return savedFile;
-  }
 
   @Get()
   getFileById(@Query('id', ParseIntPipe) id: number) {

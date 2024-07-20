@@ -19,7 +19,9 @@ export class UploadfileService {
       const readyPath = paths.resolve(filePath, fileName);
       return new Promise<Image>(async (resolve) => {
         await fs.writeFile(readyPath, File.buffer, () => {});
-        const response = await this.ImageORM.create({ path: fileName });
+        const response = await this.ImageORM.create({
+          path: process.env.HOST + fileName,
+        });
         if (!(response instanceof Image)) {
           throw new HttpException(
             'Ошибка записи файла в БД',
@@ -31,6 +33,10 @@ export class UploadfileService {
     } catch (e) {
       return e;
     }
+  }
+
+  savePath(path: string) {
+    return this.ImageORM.create({ path });
   }
 
   async getFileById(id: number): Promise<Image> {

@@ -3,8 +3,6 @@ import {
   Controller,
   Get,
   HttpException,
-  Param,
-  ParseIntPipe,
   Patch,
   Query,
   UploadedFile,
@@ -28,22 +26,28 @@ export class UsersController {
     private JwtService: JWTs,
   ) {}
 
-  @UseGuards(AuthGuard)
-  @ApiOperation({ summary: 'Get user for login' })
-  @ApiResponse({ status: 200, type: User })
-  @Get(':login')
-  async getUser(@Param('login') login: string): Promise<Error | User> {
-    return this.UserService.getUserAtLogin(login);
-  }
+  // @UseGuards(AuthGuard)
+  // @ApiOperation({ summary: 'Get user for login' })
+  // @ApiResponse({ status: 200, type: User })
+  // @Get(':login')
+  // async getUser(@Param('login') login: string): Promise<Error | User> {
+  //   return this.UserService.getUserAtLogin(login);
+  // }
 
   @UseGuards(AuthGuard)
   @ApiOperation({ summary: 'Get user by id' })
   @ApiResponse({ status: 200, type: User })
   @Get()
-  getUserById(
-    @Query('id', ParseIntPipe) id: number,
-  ): Promise<HttpException | UserWithoutPass> {
-    return this.UserService.getUserById(+id);
+  async getUserById(
+    @Query('login') login?: string | undefined,
+    @Query('id') id?: number | undefined,
+  ): Promise<HttpException | UserWithoutPass[] | UserWithoutPass> {
+    if (id) {
+      return await this.UserService.getUserById(+id);
+    }
+    if (login) {
+      return await this.UserService.getUser(login);
+    }
   }
 
   @UseGuards(AuthGuard)

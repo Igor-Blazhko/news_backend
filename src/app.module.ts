@@ -19,6 +19,7 @@ import { Image } from './uploadfile/model/uploadfile.model';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import * as path from 'path';
 import { APP_PIPE } from '@nestjs/core';
+import { GoogleModule } from './google/google.module';
 
 @Module({
   controllers: [AppController],
@@ -50,6 +51,7 @@ import { APP_PIPE } from '@nestjs/core';
     AuthModule,
     NewsTagsModule,
     UploadfileModule,
+    GoogleModule,
   ],
   providers: [
     {

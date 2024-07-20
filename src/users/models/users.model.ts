@@ -6,6 +6,7 @@ export interface createUser {
   sername: string;
   login: string;
   password: string;
+  avatarId?: number;
 }
 
 @Table({ tableName: 'Users' })

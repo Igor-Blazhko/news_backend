@@ -53,12 +53,9 @@ export class NewsService {
           HttpStatus.INTERNAL_SERVER_ERROR,
         );
       }
-      console.log('tags1', newsDto.Tags);
       const tags: CreateTagDto[] = newsDto.Tags.map((item: string) => {
         return { nametag: item };
       });
-      console.log('--------------------');
-      console.log('tags2', tags);
       await tags.map(async (tag: CreateTagDto): Promise<void> => {
         const Tag: Tag = await this.TagsService.createTag(tag);
         const createAssociationDTO: createAssociationDto = {
@@ -117,6 +114,8 @@ export class NewsService {
   ): Promise<{ posts: New[]; countPage: number }> {
     let limit = undefined;
     let offset = undefined;
+    let countPage = await this.getCountPage();
+    if (page > countPage) page = countPage;
     if (page) {
       limit = LIMIT_on_PAGE;
       offset = (page - 1) * LIMIT_on_PAGE;
@@ -126,7 +125,6 @@ export class NewsService {
     let whereTag = undefined;
     let whereUser = undefined;
 
-    let countPage = await this.getCountPage();
     if (filter && typeFilter) {
       switch (typeFilter) {
         case Filter.All:

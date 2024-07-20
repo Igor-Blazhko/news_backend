@@ -1,4 +1,4 @@
-import { IsEmpty, IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 import { User, createUser } from '../models/users.model';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -42,3 +42,11 @@ export class UpdateUserWithImgDto extends UpdateUserDto {
 }
 
 export type UserWithoutPass = Omit<User, 'password'>;
+
+export class GoogleUser {
+  login: string;
+  name: string;
+  sername: string;
+  picturePath: string;
+  accessToken: string;
+}

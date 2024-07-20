@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { User } from './models/users.model';
+import { createUser, User } from './models/users.model';
 import { InjectModel } from '@nestjs/sequelize';
 import {
   CreateUserDto,
@@ -9,6 +9,7 @@ import {
 } from './dto/users.dto';
 import { UploadfileService } from 'src/uploadfile/uploadfile.service';
 import { Image } from 'src/uploadfile/model/uploadfile.model';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class UsersService {
@@ -17,7 +18,9 @@ export class UsersService {
     private UploadService: UploadfileService,
   ) {}
 
-  async CreateUser(userBodyRegister: CreateUserDto): Promise<Error | User> {
+  async CreateUser(
+    userBodyRegister: CreateUserDto | createUser,
+  ): Promise<Error | User> {
     try {
       const userBodyRegisterModifed: CreateUserDto = {
         ...userBodyRegister,
@@ -75,34 +78,53 @@ export class UsersService {
 
   async updateUser(
     updateDTO: UpdateUserWithUserDto,
-    file: Express.Multer.File,
+    file?: Express.Multer.File,
   ) {
     try {
-      const imgFile: Image | Error =
-        await this.UploadService.saveFilePath(file);
-      if (!(imgFile instanceof Image))
-        throw new HttpException('er', HttpStatus.INTERNAL_SERVER_ERROR);
-
-      console.log('AllDTO=', updateDTO);
-      console.log('imgId=', imgFile.id);
+      let imgFile;
+      if (file) {
+        imgFile = await this.UploadService.saveFilePath(file);
+        if (!(imgFile instanceof Image))
+          throw new HttpException('er', HttpStatus.INTERNAL_SERVER_ERROR);
+        imgFile = {
+          ...imgFile,
+          id: +imgFile.id,
+        };
+      } else imgFile.id = null;
       const updateModifedDTO: UpdateUserWithImgDto = {
         name: updateDTO.name,
         sername: updateDTO.sername,
-        avatarId: Number(imgFile.id),
+        avatarId: imgFile.id,
       };
-      console.log('DTO: ', updateModifedDTO);
       const status = await this.UserORM.update(updateModifedDTO, {
         where: { id: updateDTO.User.id },
       });
       console.log('status', status);
-      if (!status)
+      if (!status[0])
         throw new HttpException(
           'Ошибка работы БД',
           HttpStatus.INTERNAL_SERVER_ERROR,
         );
-      return status;
+      return new HttpException('Successful', HttpStatus.OK);
     } catch (err) {
       return err;
+    }
+  }
+
+  async getUser(login: string): Promise<HttpException | UserWithoutPass[]> {
+    try {
+      const user = await this.UserORM.findAll({
+        where: {
+          login: {
+            [Op.startsWith]: login.toLowerCase(),
+          },
+        },
+        attributes: { exclude: ['password'] },
+      });
+      if (user[0] instanceof User) return user;
+      return [];
+    } catch (er) {
+      return er;
     }
   }
 }
